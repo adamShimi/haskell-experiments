@@ -43,7 +43,13 @@ instance Functor ITree where
 
 -- Exercise 4
 
-data NoFunc a = Ok a | Bad [a]
+-- Found on the internet
+
+data F a = F (a -> Bool)
+
+-- Not a functor, because a -> b and a -> Bool cannot make a b -> Bool.
+-- Actually, this is not a covariant functor (like Functor), but it is
+-- a contravariant one (one where the map is of type (a -> b) -> f b -> f a
 
 -- Exercise 5
 
