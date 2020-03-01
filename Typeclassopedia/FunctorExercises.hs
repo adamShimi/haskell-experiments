@@ -40,3 +40,12 @@ data ITree a = Leaf (Int -> a) | Node [ITree a]
 instance Functor ITree where
   fmap f (Leaf l) = Leaf (f . l)
   fmap f (Node xs) = Node (map (fmap f) xs)
+
+-- Exercise 4
+
+data NoFunc a = Ok a | Bad [a]
+
+-- Exercise 5
+
+-- instance (Functor f1) => Functor (f2 f1) where
+--   fmap f x = fmap (fmap f) x
