@@ -72,4 +72,4 @@ lift2Mbis f m1 m2 = pure f <*> m1 <*> m2
 
 -- instance Monad ((->) e) where
 --   return = const
---   f >>= g  = \x -> (g . f) x
+--   f >>= g  = \x -> (g . f) x x
