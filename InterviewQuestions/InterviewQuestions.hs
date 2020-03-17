@@ -71,5 +71,5 @@ lift2Mbis f m1 m2 = pure f <*> m1 <*> m2
 -- Question 7 : implement Monad instance of ((->) e)
 
 -- instance Monad ((->) e) where
---   pure = const
---   (>>=)  = flip (.)
+--   return = const
+--   f >>= g  = \x -> (g . f) x
