@@ -67,3 +67,9 @@ instance Monad Option where
 
 lift2Mbis :: (a -> b -> c) -> Option a -> Option b -> Option c
 lift2Mbis f m1 m2 = pure f <*> m1 <*> m2
+
+-- Question 7 : implement Monad instance of ((->) e)
+
+-- instance Monad ((->) e) where
+--   pure = const
+--   (>>=)  = flip (.)
