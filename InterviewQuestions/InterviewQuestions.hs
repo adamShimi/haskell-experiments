@@ -73,3 +73,11 @@ lift2Mbis f m1 m2 = pure f <*> m1 <*> m2
 -- instance Monad ((->) e) where
 --   return = const
 --   f >>= g  = \x -> (g . f) x x
+
+-- Question 8 : implement a function of type : Applicative f => [(f a, b)] -> f [(a, b)]
+
+onAppl :: Applicative f => [(f a, b)] -> f [(a, b)]
+onAppl = traverse (\(fx,y) -> fmap (\x -> (x,y)) fx)
+
+-- Question 9 : implement a function of type : (Traversable t, Applicative f) => t (f a, b) -> f (t (a, b))
+-- Same answer as previous question.
