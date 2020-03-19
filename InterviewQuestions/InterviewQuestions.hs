@@ -81,3 +81,18 @@ onAppl = traverse (\(fx,y) -> fmap (\x -> (x,y)) fx)
 
 -- Question 9 : implement a function of type : (Traversable t, Applicative f) => t (f a, b) -> f (t (a, b))
 -- Same answer as previous question.
+
+-- Question 10 : Give an Either-like data type whose Applicative accumulates errors.
+-- (knowledge of functional structures, reasoning about types)
+
+data Acc e a = LeftAcc [e] | RightAcc a
+
+instance Functor (Acc e) where
+  fmap _ (LeftAcc le) = LeftAcc le
+  fmap f (RightAcc x) = RightAcc (f x)
+
+instance Applicative (Acc e) where
+  pure = RightAcc
+  (RightAcc f) <*> a = fmap f a
+  (LeftAcc le) <*> (RightAcc x) = LeftAcc le
+  (LeftAcc le1) <*> (LeftAcc le2) = LeftAcc (le1++le2)
