@@ -46,7 +46,9 @@ f3 = ($)
 f4 :: forall a b c . (a -> b -> c) -> (a,b) -> c
 f4 f (x,y) = f x y
 
--- Question 6  : implement Monad instance for Maybe
+-- No question 6 in the web site, error of counting
+
+-- Question 7  : implement Monad instance for Maybe
 
 -- Rust rpz!!!
 data Option a = None | Some a
@@ -68,21 +70,22 @@ instance Monad Option where
 lift2Mbis :: (a -> b -> c) -> Option a -> Option b -> Option c
 lift2Mbis f m1 m2 = pure f <*> m1 <*> m2
 
--- Question 7 : implement Monad instance of ((->) e)
+-- Question 8 : implement Monad instance of ((->) e)
 
 -- instance Monad ((->) e) where
 --   return = const
 --   f >>= g  = \x -> (g . f) x x
 
--- Question 8 : implement a function of type : Applicative f => [(f a, b)] -> f [(a, b)]
+-- Question 9 : implement a function of type : Applicative f => [(f a, b)] -> f [(a, b)]
 
 onAppl :: Applicative f => [(f a, b)] -> f [(a, b)]
 onAppl = traverse (\(fx,y) -> fmap (\x -> (x,y)) fx)
 
--- Question 9 : implement a function of type : (Traversable t, Applicative f) => t (f a, b) -> f (t (a, b))
+-- Question 10 : implement a function of type :
+-- (Traversable t, Applicative f) => t (f a, b) -> f (t (a, b))
 -- Same answer as previous question.
 
--- Question 10 : Give an Either-like data type whose Applicative accumulates errors.
+-- Question 11 : Give an Either-like data type whose Applicative accumulates errors.
 -- (knowledge of functional structures, reasoning about types)
 
 data Acc e a = LeftAcc [e] | RightAcc a
@@ -96,3 +99,21 @@ instance Applicative (Acc e) where
   (RightAcc f) <*> a = fmap f a
   (LeftAcc le) <*> (RightAcc x) = LeftAcc le
   (LeftAcc le1) <*> (LeftAcc le2) = LeftAcc (le1++le2)
+
+-- Question 12 : Does data Pair a = Pair a a have a reasonable Applicative instance?
+-- If so, what is it. What about Monad? (knowledge of functional structures)
+
+data Pair a = Pair a a
+
+instance Functor Pair where
+  fmap f (Pair x y) = Pair (f x) (f y)
+
+instance Applicative Pair where
+  pure x = Pair x x
+  (Pair fx fy) <*> (Pair x y) = Pair (fx x) (fy y)
+
+instance Monad Pair where
+  return = pure
+  (Pair x y) >>= f = let Pair x' _ = f x
+                         Pair _ y'' = f y
+                     in Pair x' y''
