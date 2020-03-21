@@ -12,9 +12,7 @@ complBalTree :: Int -> [Tree Char]
 complBalTree 0 = [Empty]
 complBalTree 1 = [Branch 'x' Empty Empty]
 complBalTree n =
-  concat $
-  map (\(nbl,nbr) -> [Branch 'x' l r | l <- (complBalTree nbl), r <- (complBalTree nbr)]) $
-  part2 n
+  (part2 n) >>= (\(nbl,nbr) -> [Branch 'x' l r | l <- (complBalTree nbl), r <- (complBalTree nbr)])
 
 part2 :: Int -> [(Int,Int)]
 part2 n
