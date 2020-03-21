@@ -31,3 +31,15 @@ mirror Empty Empty = True
 mirror Empty _ = False
 mirror _ Empty = False
 mirror (Branch _ l1 r1) (Branch _ l2 r2) = (mirror l1 r2) && (mirror r1 l2)
+
+-- Problem 57 : Build binary search tree from list of values.
+
+buildSearch :: (Ord a) => [a] -> Tree a
+buildSearch [] = Empty
+buildSearch (x:xs) = insert x (buildSearch xs)
+
+insert :: (Ord a) => a -> Tree a -> Tree a
+insert x Empty = Branch x Empty Empty
+insert x (Branch y l r) = if x <= y
+                          then Branch y (insert x l) r
+                          else Branch y l (insert x r)
