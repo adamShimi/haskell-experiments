@@ -43,3 +43,8 @@ insert x Empty = Branch x Empty Empty
 insert x (Branch y l r) = if x <= y
                           then Branch y (insert x l) r
                           else Branch y l (insert x r)
+
+-- Problem 58 : Generate all symmetric completely balanced search trees.
+
+symTrees :: Int -> [Tree Char]
+symTrees = (filter isSym) . complBalTree
