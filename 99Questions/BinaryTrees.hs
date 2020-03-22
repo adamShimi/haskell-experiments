@@ -48,3 +48,23 @@ insert x (Branch y l r) = if x <= y
 
 symTrees :: Int -> [Tree Char]
 symTrees = (filter isSym) . complBalTree
+
+-- Problem 59 : Construct all height-balanced binary tree of a given maximum height
+
+-- Need to remove duplicates.
+allBinary :: Int -> a -> [Tree a]
+allBinary 0 _ = [Empty]
+allBinary n e =
+  let smaller = allBinary (n-1) e in
+  ([(x,y)| x <- smaller, y <- smaller] >>= (\(x,y) -> [Branch e x y]))
+  ++ smaller
+
+isHeightBal :: Tree a -> Bool
+isHeightBal Empty = True
+isHeightBal (Branch _ l r) = (height l == height r) && isHeightBal l && isHeightBal r
+
+height :: Tree a -> Int
+height Empty = 0
+height (Branch _ l r) = 1 + height l + height r
+
+
