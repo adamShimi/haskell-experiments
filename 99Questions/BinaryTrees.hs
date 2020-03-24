@@ -51,6 +51,9 @@ symTrees = (filter isSym) . complBalTree
 
 -- Problem 59 : Construct all height-balanced binary tree of a given maximum height
 
+allHeightBall :: Int -> a -> [Tree a]
+allHeightBall n = (filter (isHeightBal)) . (allBinary n)
+
 -- Need to remove duplicates.
 allBinary :: Int -> a -> [Tree a]
 allBinary 0 _ = [Empty]
@@ -61,7 +64,7 @@ allBinary n e =
 
 isHeightBal :: Tree a -> Bool
 isHeightBal Empty = True
-isHeightBal (Branch _ l r) = (height l == height r) && isHeightBal l && isHeightBal r
+isHeightBal (Branch _ l r) = (height l - height r <= 1) && isHeightBal l && isHeightBal r
 
 height :: Tree a -> Int
 height Empty = 0
