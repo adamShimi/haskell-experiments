@@ -9,12 +9,14 @@ data DoubleVal = TwoNum (Int,Int) | AlphaNum (Char,Int) deriving (Show)
 
 parserDoubleVal = twoNums <|> alphaAndNum
 
+digitParse :: Parser Int
+digitParse = digitToInt <$> digit
+
+pairNums :: Parser (Int,Int)
+pairNums = (,) <$> (digitParse <* (char '-')) <*> digitParse
+
 twoNums :: Parser DoubleVal
-twoNums = do
-          x <- digit
-          _ <- char '-'
-          y <- digit
-          return (TwoNum (digitToInt x, digitToInt y))
+twoNums = pairNums >>= (\x -> return (TwoNum x))
 
 alphaAndNum :: Parser DoubleVal
 alphaAndNum = do
@@ -22,3 +24,14 @@ alphaAndNum = do
              _ <- char '-'
              y <- digit
              return (AlphaNum (x, digitToInt y))
+
+data Plate = Plate Int Int Int Int Char deriving (Show)
+
+plateNum :: Parser String
+plateNum = (manyTill digit (char '-'))
+
+plate :: Parser Plate
+plate = do
+        [x1,x2,x3,x4] <- count 4 plateNum
+        c <- letter
+        return (Plate (read x1) (read x2) (read x3) (read x4) c)
