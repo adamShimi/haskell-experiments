@@ -31,3 +31,6 @@ plate =
 
 plateNum :: Parser String
 plateNum = (manyTill digit (char '-'))
+
+wordsBis :: Parser [String]
+wordsBis = spaces *> many (many1 (noneOf [' ']) <* spaces) <* eof
