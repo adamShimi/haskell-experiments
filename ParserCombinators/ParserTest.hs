@@ -40,23 +40,25 @@ wordsBis = spaces *> many (many1 (noneOf [' ']) <* spaces) <* eof
 
 data Expression =
   Val Int
-  | Plus Int Int
+  | Op Bop Int Int
   deriving (Eq, Show)
 
--- data Bop = Plus
---  | Minus
+data Bop = Plus
+  | Minus
 --  | Times
 --  | Divide
+  deriving (Eq, Show)
 
 parseVal :: Parser Expression
 parseVal = (many1 digit <* spaces <* eof) >>= (\x -> return $ Val (read x))
 
-parsePlus :: Parser Expression
-parsePlus = do
-            x <- many1 digit
-            _ <- spaces *> char '+' <* spaces
-            y <- many1 digit
-            return $ Plus (read x) (read y)
+parseBop :: Parser Expression
+parseBop = do
+           x <- many1 digit
+           bop <- spaces *> (char '+' <|> char '-') <* spaces
+           y <- many1 digit
+           return $ if bop == '+' then Op Plus (read x) (read y)
+                                  else Op Minus (read x) (read y)
 
 parseExpr :: Parser Expression
-parseExpr = spaces *> ( try parseVal <|> parsePlus)
+parseExpr = spaces *> ( try parseVal <|> parseBop)
