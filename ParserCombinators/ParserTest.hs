@@ -36,29 +36,25 @@ wordsBis :: Parser [String]
 wordsBis = spaces *> many (many1 (noneOf [' ']) <* spaces) <* eof
 
 
--- Basic expression grammar
+-- Basic expression grammar (with parentheses and no spaces)
 
-data Expression =
+data Expr =
   Val Int
-  | Op Bop Int Int
+  | Plus Expr Expr
   deriving (Eq, Show)
 
-data Bop = Plus
-  | Minus
+--data Bop = Plus
+--  | Minus
 --  | Times
 --  | Divide
-  deriving (Eq, Show)
+--  deriving (Eq, Show)
 
-parseVal :: Parser Expression
-parseVal = (many1 digit <* spaces <* eof) >>= (\x -> return $ Val (read x))
+parseVal :: Parser Expr
+parseVal = (many1 digit) >>= (\x -> return $ Val (read x))
 
-parseBop :: Parser Expression
-parseBop = do
-           x <- many1 digit
-           bop <- spaces *> (char '+' <|> char '-') <* spaces
-           y <- many1 digit
-           return $ if bop == '+' then Op Plus (read x) (read y)
-                                  else Op Minus (read x) (read y)
+parsePlus :: Parser Expr
+parsePlus = (,) <$> (char '(' *> parseExpr) <*> (char '+' *> parseExpr <* char ')')
+            >>= (\(x,y) -> return $ Plus x y)
 
-parseExpr :: Parser Expression
-parseExpr = spaces *> ( try parseVal <|> parseBop)
+parseExpr :: Parser Expr
+parseExpr = (try parseVal <|> parsePlus)
