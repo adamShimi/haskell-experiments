@@ -58,9 +58,11 @@ parseBopSign = char '+' *> return Plus
               <|> char '*' *> return Times
               <|> char '/' *> return Divide
 
-parsePlus :: Parser Expr
-parsePlus = (,,) <$> (char '(' *> parseExpr) <*> parseBopSign  <*> (parseExpr <* char ')')
+parseBop :: Parser Expr
+parseBop = (,,) <$> (char '(' *> parseExpr)
+                <*> (spaces *> parseBopSign <* spaces)
+                <*> (parseExpr <* char ')')
             >>= (\(x,bop,y) -> return $ Op bop x y)
 
 parseExpr :: Parser Expr
-parseExpr = (try parseVal <|> parsePlus)
+parseExpr = spaces *> (try parseVal <|> parseBop) <* spaces
