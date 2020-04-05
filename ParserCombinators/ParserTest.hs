@@ -12,12 +12,12 @@ parserDoubleVal = twoNums <|> alphaAndNum
 twoNums :: Parser DoubleVal
 twoNums =
   (,) <$> digitParse <* (char '-') <*> digitParse
-  >>= (\x -> return (TwoNum x))
+  >>= (return . TwoNum)
 
 alphaAndNum :: Parser DoubleVal
 alphaAndNum =
   (,) <$> letter <* char '-' <*> digitParse
-  >>= (\(x,y) -> return (AlphaNum (x,y)))
+  >>= (return . AlphaNum)
 
 digitParse :: Parser Int
 digitParse = digitToInt <$> digit
@@ -50,7 +50,7 @@ data Bop = Plus
   deriving (Eq, Show)
 
 parseVal :: Parser Expr
-parseVal = (many1 digit) >>= (\x -> return $ Val (read x))
+parseVal = (many1 digit) >>= (return . Val . read)
 
 parseBopSign :: Parser Bop
 parseBopSign = char '+' *> return Plus
@@ -65,4 +65,4 @@ parseBop = (,,) <$> (char '(' *> parseExpr)
             >>= (\(x,bop,y) -> return $ Op bop x y)
 
 parseExpr :: Parser Expr
-parseExpr = spaces *> (try parseVal <|> parseBop) <* spaces
+parseExpr = spaces *> choice [parseVal,parseBop] <* spaces
